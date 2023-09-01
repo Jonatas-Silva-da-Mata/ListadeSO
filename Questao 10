@@ -1,0 +1,48 @@
+import random
+
+# Função para simular o algoritmo FIFO
+def fifo(string_referencia_pagina, num_quadros):
+    quadros = []
+    falhas_pagina = 0
+    for pagina in string_referencia_pagina:
+        if pagina not in quadros:
+            if len(quadros) < num_quadros:
+                quadros.append(pagina)
+            else:
+                quadros.pop(0)
+                quadros.append(pagina)
+            falhas_pagina += 1
+    return falhas_pagina
+
+# Função para simular o algoritmo LRU
+def lru(string_referencia_pagina, num_quadros):
+    quadros = []
+    falhas_pagina = 0
+    ordem_pagina = []
+    for pagina in string_referencia_pagina:
+        if pagina not in quadros:
+            if len(quadros) < num_quadros:
+                quadros.append(pagina)
+                ordem_pagina.append(pagina)
+            else:
+                pagina_removida = ordem_pagina.pop(0)
+                quadros.remove(pagina_removida)
+                quadros.append(pagina)
+                ordem_pagina.append(pagina)
+            falhas_pagina += 1
+        else:
+            ordem_pagina.remove(pagina)
+            ordem_pagina.append(pagina)
+    return falhas_pagina
+
+# Função para gerar uma string de referência de página aleatória
+def gerar_string_referencia_pagina(tamanho, num_paginas):
+    return [random.randint(0, num_paginas - 1) for _ in range(tamanho)]
+
+# Experimento com diferentes números de quadros de página
+string_referencia_pagina = gerar_string_referencia_pagina(100, 10)
+
+for num_quadros in range(1, 11):
+    falhas_fifo = fifo(string_referencia_pagina, num_quadros)
+    falhas_lru = lru(string_referencia_pagina, num_quadros)
+    print(f"Quadros de Página: {num_quadros}, FIFO Falhas de Página: {falhas_fifo}, LRU Falhas de Página: {falhas_lru}")
